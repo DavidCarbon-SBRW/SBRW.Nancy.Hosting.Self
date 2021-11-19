@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>Enables hosting Nancy in any application.</Description>
+    <PackageTags>Nancy, Host</PackageTags>
+    <TargetFrameworks>netstandard2.0;net452</TargetFrameworks>
+    <Version>2.0.0001</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <NeutralLanguage>en</NeutralLanguage>
+    <Authors>Andreas Hakansson, Steven Robbins and Contributors</Authors>
+    <Company>Nancy</Company>
+    <Copyright>© Andreas Hakansson, Steven Robbins and Contributors</Copyright>
+    <RepositoryType>git</RepositoryType>
+    <PackageIcon>Logo-Full-Size.png</PackageIcon>
+    <PackageIconUrl />
+    <PackageProjectUrl>https://github.com/DavidCarbon-SBRW/SBRW.Nancy.Hosting.Self</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/DavidCarbon-SBRW/SBRW.Nancy.Hosting.Self</RepositoryUrl>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="System.Security.Principal.Windows">
+      <Version>4.3.0</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Nancy" Version="2.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Icon\Logo-Full-Size.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+</Project>
