@@ -1,19 +1,20 @@
-﻿namespace Nancy.Hosting.Self
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.IO;
-    using System.Linq;
-    using System.Net;
-    using System.Security.Cryptography.X509Certificates;
-    using System.Security.Principal;
-    using System.Threading.Tasks;
-    using Nancy.Bootstrapper;
-    using Nancy.Extensions;
-    using Nancy.IO;
-    using System.Threading;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Security.Cryptography.X509Certificates;
+using System.Security.Principal;
+using System.Threading.Tasks;
+using Nancy.Bootstrapper;
+using Nancy.Extensions;
+using Nancy.IO;
+using System.Threading;
+using Nancy;
 
+namespace SBRW.Nancy.Hosting.Self
+{
     /// <summary>
     /// Allows to host Nancy server inside any application - console or windows service.
     /// </summary>
@@ -126,7 +127,7 @@
 
             Task.Run(() =>
             {
-                var semaphore = new Semaphore(this.configuration.MaximumConnectionCount, this.configuration.MaximumConnectionCount);
+                Semaphore semaphore = new Semaphore(this.configuration.MaximumConnectionCount, this.configuration.MaximumConnectionCount);
                 while (!this.stop)
                 {
                     semaphore.WaitOne();
@@ -136,7 +137,7 @@
                         try
                         {
                             semaphore.Release();
-                            var context = await contextTask.ConfigureAwait(false);
+                            HttpListenerContext context = await contextTask.ConfigureAwait(false);
                             await this.Process(context).ConfigureAwait(false);
                         }
                         catch (Exception ex)
@@ -179,7 +180,7 @@
                 // if the listener fails to start, it gets disposed;
                 // so we need a new one, each time.
                 this.listener = new HttpListener();
-                foreach (var prefix in this.GetPrefixes())
+                foreach (string prefix in this.GetPrefixes())
                 {
                     this.listener.Prefixes.Add(prefix);
                 }
@@ -201,9 +202,9 @@
 
         private bool TryAddUrlReservations()
         {
-            var user = this.GetUser();
+            string user = this.GetUser();
 
-            foreach (var prefix in this.GetPrefixes())
+            foreach (string prefix in this.GetPrefixes())
             {
                 if (!NetSh.AddUrlAcl(prefix, user))
                 {
@@ -237,7 +238,7 @@
         {
             foreach (var baseUri in this.baseUriList)
             {
-                var prefix = new UriBuilder(baseUri).ToString();
+                string prefix = new UriBuilder(baseUri).ToString();
 
                 if (this.configuration.RewriteLocalhost && !baseUri.Host.Contains("."))
                 {
@@ -250,18 +251,17 @@
 
         private Request ConvertRequestToNancyRequest(HttpListenerRequest request)
         {
-            var baseUri = this.GetBaseUri(request);
+            Uri baseUri = this.GetBaseUri(request);
 
             if (baseUri == null)
             {
                 throw new InvalidOperationException(string.Format("Unable to locate base URI for request: {0}",request.Url));
             }
 
-            var expectedRequestLength =
+            long expectedRequestLength =
                 GetExpectedRequestLength(request.Headers.ToDictionary());
 
-
-            var nancyUrl = new Url
+            Url nancyUrl = new Url
             {
                 Scheme = request.Url.Scheme,
                 HostName = request.Url.Host,
@@ -275,7 +275,7 @@
 
             if (this.configuration.EnableClientCertificates)
             {
-                var x509Certificate = request.GetClientCertificate();
+                X509Certificate2 x509Certificate = request.GetClientCertificate();
 
                 if (x509Certificate != null)
                 {
@@ -285,9 +285,9 @@
 
             // NOTE: For HTTP/2 we want fieldCount = 1,
             // otherwise (HTTP/1.0 and HTTP/1.1) we want fieldCount = 2
-            var fieldCount = request.ProtocolVersion.Major == 2 ? 1 : 2;
+            int fieldCount = request.ProtocolVersion.Major == 2 ? 1 : 2;
 
-            var protocolVersion = string.Format("HTTP/{0}", request.ProtocolVersion.ToString(fieldCount));
+            string protocolVersion = string.Format("HTTP/{0}", request.ProtocolVersion.ToString(fieldCount));
 
             return new Request(
                 request.HttpMethod,
@@ -301,7 +301,7 @@
 
         private Uri GetBaseUri(HttpListenerRequest request)
         {
-            var result = this.baseUriList.FirstOrDefault(uri => uri.IsCaseInsensitiveBaseOf(request.Url));
+            Uri result = this.baseUriList.FirstOrDefault(uri => uri.IsCaseInsensitiveBaseOf(request.Url));
 
             if (result != null)
             {
@@ -355,7 +355,7 @@
 
         private static void OutputWithDefaultTransferEncoding(Response nancyResponse, HttpListenerResponse response)
         {
-            using (var output = response.OutputStream)
+            using (Stream output = response.OutputStream)
             {
                 nancyResponse.Contents.Invoke(output);
             }
@@ -364,23 +364,22 @@
         private static void OutputWithContentLength(Response nancyResponse, HttpListenerResponse response)
         {
             byte[] buffer;
-            using (var memoryStream = new MemoryStream())
+            using (MemoryStream memoryStream = new MemoryStream())
             {
                 nancyResponse.Contents.Invoke(memoryStream);
                 buffer = memoryStream.ToArray();
             }
 
-            string value;
-            var contentLength = nancyResponse.Headers.TryGetValue("Content-Length", out value) ?
+            long contentLength = nancyResponse.Headers.TryGetValue("Content-Length", out string value) ?
                 Convert.ToInt64(value) :
                 buffer.Length;
 
             response.SendChunked = false;
             response.ContentLength64 = contentLength;
 
-            using (var output = response.OutputStream)
+            using (Stream output = response.OutputStream)
             {
-                using (var writer = new BinaryWriter(output))
+                using (BinaryWriter writer = new BinaryWriter(output))
                 {
                     writer.Write(buffer);
                     writer.Flush();
@@ -395,22 +394,19 @@
                 return 0;
             }
 
-            IEnumerable<string> values;
-            if (!incomingHeaders.TryGetValue("Content-Length", out values))
+            if (!incomingHeaders.TryGetValue("Content-Length", out IEnumerable<string> values))
             {
                 return 0;
             }
 
-            var headerValue = values.SingleOrDefault();
+            string headerValue = values.SingleOrDefault();
 
             if (headerValue == null)
             {
                 return 0;
             }
 
-            long contentLength;
-
-            return !long.TryParse(headerValue, NumberStyles.Any, CultureInfo.InvariantCulture, out contentLength) ?
+            return !long.TryParse(headerValue, NumberStyles.Any, CultureInfo.InvariantCulture, out long contentLength) ?
                 0 :
                 contentLength;
         }
@@ -419,8 +415,8 @@
         {
             try
             {
-                var nancyRequest = this.ConvertRequestToNancyRequest(ctx.Request);
-                using (var nancyContext = await this.engine.HandleRequest(nancyRequest).ConfigureAwait(false))
+                Request nancyRequest = this.ConvertRequestToNancyRequest(ctx.Request);
+                using (NancyContext nancyContext = await this.engine.HandleRequest(nancyRequest).ConfigureAwait(false))
                 {
                     try
                     {

@@ -1,7 +1,7 @@
-﻿namespace Nancy.Hosting.Self
-{
-    using System;
+﻿using System;
 
+namespace SBRW.Nancy.Hosting.Self
+{
     /// <summary>
     /// Executes NetSh commands
     /// </summary>
@@ -19,7 +19,7 @@
         {
             try
             {
-                var arguments = GetParameters(url, user);
+                string arguments = GetParameters(url, user);
 
                 return UacHelper.RunElevated(NetshCommand, arguments);
             }

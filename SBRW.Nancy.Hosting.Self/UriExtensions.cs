@@ -1,9 +1,9 @@
-namespace Nancy.Hosting.Self
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
+namespace SBRW.Nancy.Hosting.Self
+{
     /// <summary>
     /// Extension methods for working with <see cref="Uri"/> instances.
     /// </summary>
@@ -11,14 +11,14 @@ namespace Nancy.Hosting.Self
     {
         public static bool IsCaseInsensitiveBaseOf(this Uri source, Uri value)
         {
-            var uriComponents = source.Host == "localhost" ? (UriComponents.Port | UriComponents.Scheme) : (UriComponents.HostAndPort | UriComponents.Scheme);
+            UriComponents uriComponents = source.Host == "localhost" ? (UriComponents.Port | UriComponents.Scheme) : (UriComponents.HostAndPort | UriComponents.Scheme);
             if (Uri.Compare(source, value, uriComponents, UriFormat.Unescaped, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 return false;
             }
 
-            var sourceSegments = source.Segments;
-            var valueSegments = value.Segments;
+            string[] sourceSegments = source.Segments;
+            string[] valueSegments = value.Segments;
 
             return sourceSegments.ZipCompare(valueSegments, (s1, s2) => s1.Length == 0 || SegmentEquals(s1, s2));
         }
@@ -49,13 +49,13 @@ namespace Nancy.Hosting.Self
             {
                 using (var enumerator2 = source2.GetEnumerator())
                 {
-                    var has1 = enumerator1.MoveNext();
-                    var has2 = enumerator2.MoveNext();
+                    bool has1 = enumerator1.MoveNext();
+                    bool has2 = enumerator2.MoveNext();
 
                     while (has1 || has2)
                     {
-                        var current1 = has1 ? enumerator1.Current : "";
-                        var current2 = has2 ? enumerator2.Current : "";
+                        string current1 = has1 ? enumerator1.Current : "";
+                        string current2 = has2 ? enumerator2.Current : "";
 
                         if (!comparison(current1, current2))
                         {
@@ -85,14 +85,14 @@ namespace Nancy.Hosting.Self
             {
                 using (var enumerator2 = source2.GetEnumerator())
                 {
-                    var has1 = enumerator1.MoveNext();
-                    var has2 = enumerator2.MoveNext();
+                    bool has1 = enumerator1.MoveNext();
+                    bool has2 = enumerator2.MoveNext();
 
                     while (has1 || has2)
                     {
-                        var value1 = has1 ? enumerator1.Current : null;
-                        var value2 = has2 ? enumerator2.Current : null;
-                        var value = selector(value1, value2);
+                        string value1 = has1 ? enumerator1.Current : null;
+                        string value2 = has2 ? enumerator2.Current : null;
+                        string value = selector(value1, value2);
 
                         if (value != null)
                         {
@@ -116,9 +116,9 @@ namespace Nancy.Hosting.Self
 
         private static string Join(this IEnumerable<string> source)
         {
-            var builder = new StringBuilder();
+            StringBuilder builder = new StringBuilder();
 
-            foreach (var value in source)
+            foreach (string value in source)
             {
                 builder.Append(value);
             }

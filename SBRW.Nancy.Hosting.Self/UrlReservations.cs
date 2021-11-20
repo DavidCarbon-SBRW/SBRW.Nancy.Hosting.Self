@@ -1,8 +1,8 @@
-﻿namespace Nancy.Hosting.Self
-{
-    using System;
-    using System.Security.Principal;
+﻿using System;
+using System.Security.Principal;
 
+namespace SBRW.Nancy.Hosting.Self
+{
     /// <summary>
     /// Configuration for automatic url reservation creation
     /// </summary>
@@ -36,7 +36,7 @@
         {
             try
             {
-                var account = EveryoneReference.Translate(typeof(NTAccount)) as NTAccount;
+                NTAccount account = EveryoneReference.Translate(typeof(NTAccount)) as NTAccount;
                 if (account != null)
                 {
                     return account.Value;
