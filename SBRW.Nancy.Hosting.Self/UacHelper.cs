@@ -1,7 +1,7 @@
-﻿namespace Nancy.Hosting.Self
-{
-    using System.Diagnostics;
+﻿using System.Diagnostics;
 
+namespace SBRW.Nancy.Hosting.Self
+{
     /// <summary>
     /// Helpers for UAC
     /// </summary>
@@ -15,7 +15,7 @@
         /// <returns>True if successful, false otherwise</returns>
         public static bool RunElevated(string file, string args)
         {
-            var process = CreateProcess(args, file);
+            Process process = CreateProcess(args, file);
 
             process.Start();
             process.WaitForExit();

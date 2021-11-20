@@ -1,9 +1,10 @@
-namespace Nancy.Hosting.Self
-{
-    using System;
-    using System.IO;
-    using System.Reflection;
+using Nancy;
+using System;
+using System.IO;
+using System.Reflection;
 
+namespace SBRW.Nancy.Hosting.Self
+{
     public class FileSystemRootPathProvider : IRootPathProvider
     {
         private readonly Lazy<string> rootPath = new Lazy<string>(ExtractRootPath);
@@ -15,10 +16,10 @@ namespace Nancy.Hosting.Self
 
         private static string ExtractRootPath()
         {
-            var assembly =
+            Assembly assembly =
                 Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
 
-            var location = assembly.Location;
+            string location = assembly.Location;
 
             return Path.GetDirectoryName(location);
         }

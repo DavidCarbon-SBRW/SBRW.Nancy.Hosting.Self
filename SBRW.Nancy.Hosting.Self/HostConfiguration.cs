@@ -1,8 +1,8 @@
-﻿namespace Nancy.Hosting.Self
-{
-    using System;
-    using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 
+namespace SBRW.Nancy.Hosting.Self
+{
     /// <summary>
     /// Host configuration for the self host.
     /// </summary>
@@ -74,7 +74,7 @@
             get
             {
                 // Divide by 2 for hyper-threading, and good defaults.
-                var threadCount = Environment.ProcessorCount >> 1;
+                int threadCount = Environment.ProcessorCount >> 1;
 
                 if (threadCount < 1)
                 {
@@ -102,7 +102,7 @@
             this.AllowChunkedEncoding = true;
             this.UnhandledExceptionCallback = e =>
                 {
-                    var message = string.Format("---\n{0}\n---\n", e);
+                    string message = string.Format("---\n{0}\n---\n", e);
                     Debug.Write(message);
                 };
             this.EnableClientCertificates = false;

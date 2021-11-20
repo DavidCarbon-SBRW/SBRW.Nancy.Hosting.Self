@@ -1,9 +1,9 @@
-﻿namespace Nancy.Hosting.Self
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
+namespace SBRW.Nancy.Hosting.Self
+{
     /// <summary>
     /// Exception for when automatic address reservation creation fails.
     /// Provides the user with manual instructions.
@@ -30,7 +30,7 @@
         {
             get
             {
-                var stringBuilder = new StringBuilder();
+                StringBuilder stringBuilder = new StringBuilder();
 
                 stringBuilder.AppendLine("The Nancy self host was unable to start, as no namespace reservation existed for the provided url(s).");
                 stringBuilder.AppendLine();
@@ -41,7 +41,7 @@
 
                 foreach (var prefix in prefixes)
                 {
-                    var command = NetSh.GetParameters(prefix, user);
+                    string command = NetSh.GetParameters(prefix, user);
                     stringBuilder.AppendLine(string.Format("netsh {0}", command));
                 }
 

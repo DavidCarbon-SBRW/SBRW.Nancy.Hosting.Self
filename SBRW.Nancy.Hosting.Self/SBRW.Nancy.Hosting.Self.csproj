@@ -3,7 +3,7 @@
     <Description>Enables hosting Nancy in any application.</Description>
     <PackageTags>Nancy, Host</PackageTags>
     <TargetFrameworks>netstandard2.0;net452</TargetFrameworks>
-    <Version>2.0.0002</Version>
+    <Version>2.0.0003</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <NeutralLanguage>en</NeutralLanguage>
     <Authors>Andreas Hakansson, Steven Robbins and Contributors</Authors>
