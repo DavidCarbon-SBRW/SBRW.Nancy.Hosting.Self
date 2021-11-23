@@ -1,4 +1,3 @@
-using Nancy;
 using System;
 using System.IO;
 using System.Reflection;

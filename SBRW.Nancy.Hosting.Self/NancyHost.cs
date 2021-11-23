@@ -7,11 +7,10 @@ using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 using System.Threading.Tasks;
-using Nancy.Bootstrapper;
-using Nancy.Extensions;
-using Nancy.IO;
+using SBRW.Nancy.Bootstrapper;
+using SBRW.Nancy.Extensions;
+using SBRW.Nancy.IO;
 using System.Threading;
-using Nancy;
 
 namespace SBRW.Nancy.Hosting.Self
 {
