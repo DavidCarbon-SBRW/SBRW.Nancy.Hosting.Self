@@ -3,7 +3,7 @@
     <Description>Enables hosting Nancy in any application.</Description>
     <PackageTags>Nancy, Host</PackageTags>
     <TargetFrameworks>netstandard2.0;net461;net472</TargetFrameworks>
-    <Version>2.0.0005</Version>
+    <Version>2.0.6</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <NeutralLanguage>en</NeutralLanguage>
     <Authors>Andreas Hakansson, Steven Robbins and Contributors</Authors>
@@ -14,18 +14,18 @@
     <PackageIconUrl />
     <PackageProjectUrl>https://github.com/DavidCarbon-SBRW/SBRW.Nancy.Hosting.Self</PackageProjectUrl>
     <RepositoryUrl>https://github.com/DavidCarbon-SBRW/SBRW.Nancy.Hosting.Self</RepositoryUrl>
-    <!-- Optional: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <!-- Optional: Build symbol package (.snupkg) to distribute the PDB containing Source Link -->
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <!-- Optional: Include symbols files if Self-Hosted Nuget Feed does not support symbol packages 
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-    -->
-    <DebugType>embedded</DebugType>
+    <!-- Required: Full Debugging -->
+    <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
+    <!-- Required: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <!-- Required: Build symbol package (.snupkg) to distribute the PDB containing Source Link -->
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <!-- Required: Include symbols files if Self-Hosted Nuget Feed does not support symbol packages -->
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="System.Security.Principal.Windows">
@@ -39,6 +39,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="SBRW.Nancy" Version="2.0.9" />
+    <PackageReference Include="SBRW.Nancy" Version="2.0.10" />
   </ItemGroup>
 </Project>

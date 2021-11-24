@@ -12,7 +12,9 @@ namespace SBRW.Nancy.Hosting.Self
 
         private static readonly IdentityReference EveryoneReference =
             new SecurityIdentifier(WellKnownSidType.WorldSid, null);
-
+        /// <summary>
+        /// 
+        /// </summary>
         public UrlReservations()
         {
             this.CreateAutomatically = false;

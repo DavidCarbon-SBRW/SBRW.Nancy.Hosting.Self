@@ -9,6 +9,12 @@ namespace SBRW.Nancy.Hosting.Self
     /// </summary>
     public static class UriExtensions
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static bool IsCaseInsensitiveBaseOf(this Uri source, Uri value)
         {
             UriComponents uriComponents = source.Host == "localhost" ? (UriComponents.Port | UriComponents.Scheme) : (UriComponents.HostAndPort | UriComponents.Scheme);
@@ -22,7 +28,12 @@ namespace SBRW.Nancy.Hosting.Self
 
             return sourceSegments.ZipCompare(valueSegments, (s1, s2) => s1.Length == 0 || SegmentEquals(s1, s2));
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="appBaseUri"></param>
+        /// <param name="fullUri"></param>
+        /// <returns></returns>
         public static string MakeAppLocalPath(this Uri appBaseUri, Uri fullUri)
         {
             return string.Concat("/", appBaseUri.Segments.ZipFill(fullUri.Segments, (x, y) => x != null && SegmentEquals(x, y) ? null : y).Join());
