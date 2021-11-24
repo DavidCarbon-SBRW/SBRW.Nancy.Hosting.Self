@@ -4,10 +4,16 @@ using System.Reflection;
 
 namespace SBRW.Nancy.Hosting.Self
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class FileSystemRootPathProvider : IRootPathProvider
     {
         private readonly Lazy<string> rootPath = new Lazy<string>(ExtractRootPath);
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public string GetRootPath()
         {
             return this.rootPath.Value;

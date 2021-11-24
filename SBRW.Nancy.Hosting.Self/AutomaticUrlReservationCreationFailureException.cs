@@ -12,7 +12,11 @@ namespace SBRW.Nancy.Hosting.Self
     {
         private readonly IEnumerable<string> prefixes;
         private readonly string user;
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="prefixes"></param>
+        /// <param name="user"></param>
         public AutomaticUrlReservationCreationFailureException(IEnumerable<string> prefixes, string user)
         {
             this.prefixes = prefixes;
