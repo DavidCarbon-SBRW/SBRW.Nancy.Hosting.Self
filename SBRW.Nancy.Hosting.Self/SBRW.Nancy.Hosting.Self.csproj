@@ -3,7 +3,7 @@
     <Description>Enables hosting Nancy in any application.</Description>
     <PackageTags>Nancy, Host</PackageTags>
     <TargetFrameworks>netstandard2.0;net461;net472</TargetFrameworks>
-    <Version>2.0.6</Version>
+    <Version>2.0.7</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <NeutralLanguage>en</NeutralLanguage>
     <Authors>Andreas Hakansson, Steven Robbins and Contributors</Authors>
@@ -39,6 +39,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="SBRW.Nancy" Version="2.0.10" />
+    <PackageReference Include="SBRW.Nancy" Version="2.0.11" />
   </ItemGroup>
 </Project>
