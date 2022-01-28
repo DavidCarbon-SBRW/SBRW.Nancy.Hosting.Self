@@ -19,6 +19,7 @@ namespace SBRW.Nancy.Hosting.Self
             } 
         }
 
+#if NETFRAMEWORK || NETSTANDARD2_0 || NET5_0_OR_GREATER && WINDOWS
         /// <summary>
         /// 
         /// </summary>
@@ -36,6 +37,7 @@ namespace SBRW.Nancy.Hosting.Self
                 }
             } 
         }
+#endif
 
         /// <summary>
         /// Gets or sets a value indicating whether url reservations
@@ -58,6 +60,7 @@ namespace SBRW.Nancy.Hosting.Self
         {
             try
             {
+#if NETFRAMEWORK || NETSTANDARD2_0 || NET5_0_OR_GREATER && WINDOWS
                 if (Environment.OSVersion.Platform != PlatformID.Unix)
                 {
                     NTAccount account = EveryoneReference.Translate(typeof(NTAccount)) as NTAccount;
@@ -66,6 +69,7 @@ namespace SBRW.Nancy.Hosting.Self
                         return account.Value;
                     }
                 }
+#endif
 
                 return EveryoneAccountName;
             }

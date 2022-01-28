@@ -7,7 +7,13 @@ namespace SBRW.Nancy.Hosting.Self
     /// </summary>
     public static class NetSh
     {
-        private const string NetshCommand = "netsh";
+        private static string NetshCommand
+        {
+            get
+            {
+                return "netsh";
+            }
+        }
 
         /// <summary>
         /// Add a url reservation
