@@ -2,8 +2,8 @@
   <PropertyGroup>
     <Description>Enables hosting Nancy in any application.</Description>
     <PackageTags>Nancy, Host</PackageTags>
-    <TargetFrameworks>netstandard2.0;net461;net472</TargetFrameworks>
-    <Version>2.0.8</Version>
+    <TargetFrameworks>netstandard2.0;net6.0;net6.0-windows;net461;net472</TargetFrameworks>
+    <Version>2.0.9</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <NeutralLanguage>en</NeutralLanguage>
     <Authors>Andreas Hakansson, Steven Robbins and Contributors</Authors>
@@ -39,7 +39,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="SBRW.Nancy" Version="2.0.12" />
+    <PackageReference Include="SBRW.Nancy" Version="2.0.13" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

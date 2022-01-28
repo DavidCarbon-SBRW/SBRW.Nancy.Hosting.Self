@@ -8,17 +8,33 @@ namespace SBRW.Nancy.Hosting.Self
     /// </summary>
     public class UrlReservations
     {
-        private const string EveryoneAccountName = "Everyone";
-
-        private static readonly IdentityReference EveryoneReference =
-            new SecurityIdentifier(WellKnownSidType.WorldSid, null);
         /// <summary>
         /// 
         /// </summary>
-        public UrlReservations()
-        {
-            this.CreateAutomatically = false;
-            this.User = GetEveryoneAccountName();
+        private string EveryoneAccountName 
+        { 
+            get 
+            { 
+                return "Everyone"; 
+            } 
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private IdentityReference EveryoneReference 
+        { 
+            get 
+            {
+                if (Environment.OSVersion.Platform != PlatformID.Unix)
+                {
+                    return new SecurityIdentifier(WellKnownSidType.WorldSid, null);
+                }
+                else
+                {
+                    return null;
+                }
+            } 
         }
 
         /// <summary>
@@ -34,14 +50,21 @@ namespace SBRW.Nancy.Hosting.Self
         /// </summary>
         public string User { get; set; }
 
-        private static string GetEveryoneAccountName()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        private string GetEveryoneAccountName()
         {
             try
             {
-                NTAccount account = EveryoneReference.Translate(typeof(NTAccount)) as NTAccount;
-                if (account != null)
+                if (Environment.OSVersion.Platform != PlatformID.Unix)
                 {
-                    return account.Value;
+                    NTAccount account = EveryoneReference.Translate(typeof(NTAccount)) as NTAccount;
+                    if (account != null)
+                    {
+                        return account.Value;
+                    }
                 }
 
                 return EveryoneAccountName;
@@ -50,6 +73,15 @@ namespace SBRW.Nancy.Hosting.Self
             {
                 return EveryoneAccountName;
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public UrlReservations()
+        {
+            this.CreateAutomatically = false;
+            this.User = GetEveryoneAccountName();
         }
     }
 }

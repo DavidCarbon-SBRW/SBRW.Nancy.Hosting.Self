@@ -217,8 +217,9 @@ namespace SBRW.Nancy.Hosting.Self
         private string GetUser()
         {
             return !string.IsNullOrWhiteSpace(this.configuration.UrlReservations.User)
-                ? this.configuration.UrlReservations.User
-                : WindowsIdentity.GetCurrent().Name;
+                ? this.configuration.UrlReservations.User 
+                : Environment.OSVersion.Platform != PlatformID.Unix
+                ? WindowsIdentity.GetCurrent().Name : string.Empty;
         }
 
         /// <summary>
@@ -241,7 +242,7 @@ namespace SBRW.Nancy.Hosting.Self
 
                 if (this.configuration.RewriteLocalhost && !baseUri.Host.Contains("."))
                 {
-                    prefix = prefix.Replace("localhost", "+");
+                    prefix = prefix.Replace("localhost", this.configuration.UseWeakWildcard ? "*" : "+");
                 }
 
                 yield return prefix;
