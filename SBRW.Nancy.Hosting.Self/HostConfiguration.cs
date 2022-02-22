@@ -111,9 +111,9 @@ namespace SBRW.Nancy.Hosting.Self
             this.UseWeakWildcard = false;
             this.UrlReservations = new UrlReservations();
             this.AllowChunkedEncoding = true;
-            this.UnhandledExceptionCallback = e =>
+            this.UnhandledExceptionCallback = Error =>
                 {
-                    string message = string.Format("---\n{0}\n---\n", e);
+                    string message = string.Format("---\n{0}\n---\n", Error);
                     Debug.Write(message);
                 };
             this.EnableClientCertificates = false;
