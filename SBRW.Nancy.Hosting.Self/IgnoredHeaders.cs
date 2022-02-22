@@ -9,8 +9,7 @@ namespace SBRW.Nancy.Hosting.Self
     /// </summary>
     public static class IgnoredHeaders
     {
-
-        private static readonly HashSet<string> knownHeaders = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        private static HashSet<string> KnownHeaders { get; set; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
             "content-length",
             "content-type",
@@ -26,7 +25,7 @@ namespace SBRW.Nancy.Hosting.Self
         /// <returns><c>true</c> if the header is ignored; otherwise, <c>false</c>.</returns>
         public static bool IsIgnored(string headerName)
         {
-            return knownHeaders.Contains(headerName);
+            return KnownHeaders.Contains(headerName);
         }
 
     }

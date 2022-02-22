@@ -26,14 +26,26 @@ namespace SBRW.Nancy.Hosting.Self
     [Serializable]
     public class NancyHost : IDisposable
     {
-        private const int ACCESS_DENIED = 5;
-
-        private readonly IList<Uri> baseUriList;
-        private HttpListener listener;
-        private readonly INancyEngine engine;
-        private readonly HostConfiguration configuration;
-        private readonly INancyBootstrapper bootstrapper;
-        private bool stop = false;
+        private static int ACCESS_DENIED 
+        { 
+            get 
+            { 
+                return 5; 
+            } 
+        }
+        private static bool Unix_Detected 
+        {
+            get 
+            {
+                return Environment.OSVersion.Platform == PlatformID.Unix;
+            }
+        }
+        private IList<Uri> BaseUriList { get; set; }
+        private HttpListener I_Listener { get; set; }
+        private INancyEngine N_Engine { get; set; }
+        private HostConfiguration U_Configuration { get; set; }
+        private INancyBootstrapper R_Bootstrapper { get; set; }
+        private bool F_Stop { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NancyHost"/> class for the specified <paramref name="baseUris"/>.
@@ -48,9 +60,9 @@ namespace SBRW.Nancy.Hosting.Self
         /// Uses the specified configuration.
         /// </summary>
         /// <param name="baseUris">The <see cref="Uri"/>s that the host will listen to.</param>
-        /// <param name="configuration">Configuration to use</param>
-        public NancyHost(HostConfiguration configuration, params Uri[] baseUris)
-            : this(NancyBootstrapperLocator.Bootstrapper, configuration, baseUris){}
+        /// <param name="U_Configuration">Configuration to use</param>
+        public NancyHost(HostConfiguration U_Configuration, params Uri[] baseUris)
+            : this(NancyBootstrapperLocator.Bootstrapper, U_Configuration, baseUris){}
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NancyHost"/> class for the specified <paramref name="baseUris"/>, using
@@ -66,20 +78,20 @@ namespace SBRW.Nancy.Hosting.Self
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NancyHost"/> class for the specified <paramref name="baseUris"/>, using
-        /// the provided <paramref name="bootstrapper"/>.
+        /// the provided <paramref name="R_Bootstrapper"/>.
         /// Uses the specified configuration.
         /// </summary>
-        /// <param name="bootstrapper">The bootstrapper that should be used to handle the request.</param>
-        /// <param name="configuration">Configuration to use</param>
+        /// <param name="R_Bootstrapper">The bootstrapper that should be used to handle the request.</param>
+        /// <param name="U_Configuration">Configuration to use</param>
         /// <param name="baseUris">The <see cref="Uri"/>s that the host will listen to.</param>
-        public NancyHost(INancyBootstrapper bootstrapper, HostConfiguration configuration, params Uri[] baseUris)
+        public NancyHost(INancyBootstrapper R_Bootstrapper, HostConfiguration U_Configuration, params Uri[] baseUris)
         {
-            this.bootstrapper = bootstrapper;
-            this.configuration = configuration ?? new HostConfiguration();
-            this.baseUriList = baseUris;
+            this.R_Bootstrapper = R_Bootstrapper;
+            this.U_Configuration = U_Configuration ?? new HostConfiguration();
+            this.BaseUriList = baseUris;
 
-            bootstrapper.Initialise();
-            this.engine = bootstrapper.GetEngine();
+            R_Bootstrapper.Initialise();
+            this.N_Engine = R_Bootstrapper.GetEngine();
         }
 
         /// <summary>
@@ -101,9 +113,9 @@ namespace SBRW.Nancy.Hosting.Self
         /// </summary>
         /// <param name="baseUri">The <see cref="Uri"/> that the host will listen to.</param>
         /// <param name="bootstrapper">The bootstrapper that should be used to handle the request.</param>
-        /// <param name="configuration">Configuration to use</param>
-        public NancyHost(Uri baseUri, INancyBootstrapper bootstrapper, HostConfiguration configuration)
-            : this (bootstrapper, configuration, baseUri)
+        /// <param name="U_Configuration">Configuration to use</param>
+        public NancyHost(Uri baseUri, INancyBootstrapper bootstrapper, HostConfiguration U_Configuration)
+            : this (bootstrapper, U_Configuration, baseUri)
         {
         }
 
@@ -113,8 +125,7 @@ namespace SBRW.Nancy.Hosting.Self
         public void Dispose()
         {
             this.Stop();
-
-            this.bootstrapper.Dispose();
+            this.R_Bootstrapper.Dispose();
         }
 
         /// <summary>
@@ -126,12 +137,12 @@ namespace SBRW.Nancy.Hosting.Self
 
             Task.Run(() =>
             {
-                Semaphore semaphore = new Semaphore(this.configuration.MaximumConnectionCount, this.configuration.MaximumConnectionCount);
-                while (!this.stop)
+                Semaphore semaphore = new Semaphore(this.U_Configuration.MaximumConnectionCount, this.U_Configuration.MaximumConnectionCount);
+                while (!this.F_Stop)
                 {
                     semaphore.WaitOne();
 
-                    this.listener.GetContextAsync().ContinueWith(async (contextTask) =>
+                    this.I_Listener.GetContextAsync().ContinueWith(async (contextTask) =>
                     {
                         try
                         {
@@ -141,7 +152,7 @@ namespace SBRW.Nancy.Hosting.Self
                         }
                         catch (Exception ex)
                         {
-                            this.configuration.UnhandledExceptionCallback.Invoke(ex);
+                            this.U_Configuration.UnhandledExceptionCallback.Invoke(ex);
                             throw;
                         }
                     });
@@ -156,7 +167,7 @@ namespace SBRW.Nancy.Hosting.Self
                 return;
             }
 
-            if (!this.configuration.UrlReservations.CreateAutomatically)
+            if (!this.U_Configuration.UrlReservations.CreateAutomatically)
             {
                 throw new AutomaticUrlReservationCreationFailureException(this.GetPrefixes(), this.GetUser());
             }
@@ -178,13 +189,13 @@ namespace SBRW.Nancy.Hosting.Self
             {
                 // if the listener fails to start, it gets disposed;
                 // so we need a new one, each time.
-                this.listener = new HttpListener();
+                this.I_Listener = new HttpListener();
                 foreach (string prefix in this.GetPrefixes())
                 {
-                    this.listener.Prefixes.Add(prefix);
+                    this.I_Listener.Prefixes.Add(prefix);
                 }
 
-                this.listener.Start();
+                this.I_Listener.Start();
 
                 return true;
             }
@@ -216,9 +227,14 @@ namespace SBRW.Nancy.Hosting.Self
 
         private string GetUser()
         {
-            return !string.IsNullOrWhiteSpace(this.configuration.UrlReservations.User)
-                ? this.configuration.UrlReservations.User
-                : WindowsIdentity.GetCurrent().Name;
+            return !string.IsNullOrWhiteSpace(this.U_Configuration.UrlReservations.User)
+                ? this.U_Configuration.UrlReservations.User
+#if NETFRAMEWORK || NETSTANDARD2_0 || NET5_0_OR_GREATER && WINDOWS
+                : Unix_Detected
+                ? WindowsIdentity.GetCurrent().Name : string.Empty;
+#else
+                : string.Empty;
+#endif
         }
 
         /// <summary>
@@ -226,22 +242,22 @@ namespace SBRW.Nancy.Hosting.Self
         /// </summary>
         public void Stop()
         {
-            if (this.listener != null && this.listener.IsListening)
+            if (this.I_Listener != null && this.I_Listener.IsListening)
             {
-                this.stop = true;
-                this.listener.Stop();
+                this.F_Stop = true;
+                this.I_Listener.Stop();
             }
         }
 
         internal IEnumerable<string> GetPrefixes()
         {
-            foreach (var baseUri in this.baseUriList)
+            foreach (var baseUri in this.BaseUriList)
             {
                 string prefix = new UriBuilder(baseUri).ToString();
 
-                if (this.configuration.RewriteLocalhost && !baseUri.Host.Contains("."))
+                if (this.U_Configuration.RewriteLocalhost && !baseUri.Host.Contains("."))
                 {
-                    prefix = prefix.Replace("localhost", "+");
+                    prefix = prefix.Replace("localhost", this.U_Configuration.UseWeakWildcard ? "*" : "+");
                 }
 
                 yield return prefix;
@@ -272,7 +288,7 @@ namespace SBRW.Nancy.Hosting.Self
 
             X509Certificate2 certificate = null;
 
-            if (this.configuration.EnableClientCertificates)
+            if (this.U_Configuration.EnableClientCertificates)
             {
                 X509Certificate2 x509Certificate = request.GetClientCertificate();
 
@@ -300,14 +316,14 @@ namespace SBRW.Nancy.Hosting.Self
 
         private Uri GetBaseUri(HttpListenerRequest request)
         {
-            Uri result = this.baseUriList.FirstOrDefault(uri => uri.IsCaseInsensitiveBaseOf(request.Url));
+            Uri result = this.BaseUriList.FirstOrDefault(uri => uri.IsCaseInsensitiveBaseOf(request.Url));
 
             if (result != null)
             {
                 return result;
             }
 
-            if (!this.configuration.AllowAuthorityFallback)
+            if (!this.U_Configuration.AllowAuthorityFallback)
             {
                 return null;
             }
@@ -342,7 +358,7 @@ namespace SBRW.Nancy.Hosting.Self
 
             response.StatusCode = (int)nancyResponse.StatusCode;
 
-            if (this.configuration.AllowChunkedEncoding)
+            if (this.U_Configuration.AllowChunkedEncoding)
             {
                 OutputWithDefaultTransferEncoding(nancyResponse, response);
             }
@@ -415,7 +431,7 @@ namespace SBRW.Nancy.Hosting.Self
             try
             {
                 Request nancyRequest = this.ConvertRequestToNancyRequest(ctx.Request);
-                using (NancyContext nancyContext = await this.engine.HandleRequest(nancyRequest).ConfigureAwait(false))
+                using (NancyContext nancyContext = await this.N_Engine.HandleRequest(nancyRequest).ConfigureAwait(false))
                 {
                     try
                     {
@@ -423,13 +439,13 @@ namespace SBRW.Nancy.Hosting.Self
                     }
                     catch (Exception e)
                     {
-                        this.configuration.UnhandledExceptionCallback.Invoke(e);
+                        this.U_Configuration.UnhandledExceptionCallback.Invoke(e);
                     }
                 }
             }
             catch (Exception e)
             {
-                this.configuration.UnhandledExceptionCallback.Invoke(e);
+                this.U_Configuration.UnhandledExceptionCallback.Invoke(e);
             }
         }
     }

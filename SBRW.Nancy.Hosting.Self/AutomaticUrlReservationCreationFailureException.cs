@@ -10,17 +10,17 @@ namespace SBRW.Nancy.Hosting.Self
     /// </summary>
     public class AutomaticUrlReservationCreationFailureException : Exception
     {
-        private readonly IEnumerable<string> prefixes;
-        private readonly string user;
+        private IEnumerable<string> E_Prefixes { get; set; }
+        private string E_User { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="prefixes"></param>
-        /// <param name="user"></param>
-        public AutomaticUrlReservationCreationFailureException(IEnumerable<string> prefixes, string user)
+        /// <param name="X_Prefixes"></param>
+        /// <param name="X_User"></param>
+        public AutomaticUrlReservationCreationFailureException(IEnumerable<string> X_Prefixes, string X_User)
         {
-            this.prefixes = prefixes;
-            this.user = user;
+            this.E_Prefixes = X_Prefixes;
+            this.E_User = X_User;
         }
 
         /// <summary>
@@ -43,9 +43,9 @@ namespace SBRW.Nancy.Hosting.Self
                 stringBuilder.AppendLine("the NancyHost, or create the reservations manually with the (elevated) command(s):");
                 stringBuilder.AppendLine();
 
-                foreach (var prefix in prefixes)
+                foreach (var prefix in E_Prefixes)
                 {
-                    string command = NetSh.GetParameters(prefix, user);
+                    string command = NetSh.GetParameters(prefix, E_User);
                     stringBuilder.AppendLine(string.Format("netsh {0}", command));
                 }
 
