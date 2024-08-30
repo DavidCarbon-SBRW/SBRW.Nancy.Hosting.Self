@@ -3,7 +3,7 @@
 		<Description>Enables hosting Nancy in any application.</Description>
 		<PackageTags>Nancy, Host</PackageTags>
 		<TargetFrameworks>netstandard2.0;net6.0;net6.0-windows;net8.0;net8.0-windows;net461;net472;net481</TargetFrameworks>
-		<Version>2.1.0</Version>
+		<Version>2.1.1</Version>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<NeutralLanguage>en</NeutralLanguage>
 		<Authors>Andreas Hakansson, Steven Robbins and Contributors</Authors>
@@ -26,6 +26,7 @@
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<!-- Required: Include symbols files if Self-Hosted Nuget Feed does not support symbol packages -->
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 	</PropertyGroup>
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
 		<PackageReference Include="System.Security.Principal.Windows">
@@ -39,7 +40,7 @@
 		</None>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="SBRW.Nancy" Version="2.1.0" />
+		<PackageReference Include="SBRW.Nancy" Version="2.1.1" />
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
