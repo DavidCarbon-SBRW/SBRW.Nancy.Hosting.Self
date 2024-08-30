@@ -1,48 +1,48 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <Description>Enables hosting Nancy in any application.</Description>
-    <PackageTags>Nancy, Host</PackageTags>
-    <TargetFrameworks>netstandard2.0;net6.0;net6.0-windows;net461;net472</TargetFrameworks>
-    <Version>2.0.10</Version>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <NeutralLanguage>en</NeutralLanguage>
-    <Authors>Andreas Hakansson, Steven Robbins and Contributors</Authors>
-    <Company>Nancy</Company>
-    <Copyright>© Andreas Hakansson, Steven Robbins and Contributors</Copyright>
-    <RepositoryType>git</RepositoryType>
-    <PackageIcon>Logo-Full-Size.png</PackageIcon>
-    <PackageIconUrl />
-    <PackageProjectUrl>https://github.com/DavidCarbon-SBRW/SBRW.Nancy.Hosting.Self</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/DavidCarbon-SBRW/SBRW.Nancy.Hosting.Self</RepositoryUrl>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <!-- Required: Full Debugging -->
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <!-- Required: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <!-- Required: Build symbol package (.snupkg) to distribute the PDB containing Source Link -->
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <!-- Required: Include symbols files if Self-Hosted Nuget Feed does not support symbol packages -->
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-  </PropertyGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <PackageReference Include="System.Security.Principal.Windows">
-      <Version>5.0.0</Version>
-    </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Icon\Logo-Full-Size.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="SBRW.Nancy" Version="2.0.13" />
-  </ItemGroup>
+	<PropertyGroup>
+		<Description>Enables hosting Nancy in any application.</Description>
+		<PackageTags>Nancy, Host</PackageTags>
+		<TargetFrameworks>netstandard2.0;net6.0;net6.0-windows;net8.0;net8.0-windows;net461;net472;net481</TargetFrameworks>
+		<Version>2.1.0</Version>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<NeutralLanguage>en</NeutralLanguage>
+		<Authors>Andreas Hakansson, Steven Robbins and Contributors</Authors>
+		<Company>Nancy</Company>
+		<Copyright>© Andreas Hakansson, Steven Robbins and Contributors</Copyright>
+		<RepositoryType>git</RepositoryType>
+		<PackageIcon>Logo-Full-Size.png</PackageIcon>
+		<PackageIconUrl>https://raw.githubusercontent.com/DavidCarbon-SBRW/SBRW.Nancy.Hosting.Self/development/SBRW.Nancy.Hosting.Self/Resources/Icon/Logo-Full-Size.png</PackageIconUrl>
+		<PackageProjectUrl>https://github.com/DavidCarbon-SBRW/SBRW.Nancy.Hosting.Self</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/DavidCarbon-SBRW/SBRW.Nancy.Hosting.Self</RepositoryUrl>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<!-- Required: Full Debugging -->
+		<DebugType>full</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+		<!-- Required: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<!-- Required: Build symbol package (.snupkg) to distribute the PDB containing Source Link -->
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<!-- Required: Include symbols files if Self-Hosted Nuget Feed does not support symbol packages -->
+		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+	</PropertyGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+		<PackageReference Include="System.Security.Principal.Windows">
+			<Version>5.0.0</Version>
+		</PackageReference>
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="Resources\Icon\Logo-Full-Size.png">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="SBRW.Nancy" Version="2.1.0" />
+	</ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="if &quot;$(Configuration)&quot; == &quot;Release&quot; (&#xD;&#xA;if exist &quot;$(SolutionDir)Keys\Launcher.p12&quot; (&quot;C:\Program Files (x86)\Microsoft SDKs\ClickOnce\SignTool\signtool.exe&quot; sign /f &quot;$(SolutionDir)Keys\Launcher.p12&quot; /p &quot;Launcher Development CRT&quot; /d &quot;Soapbox Race World&quot; /du &quot;https://soapboxrace.world&quot; /tr http://timestamp.digicert.com /td SHA256 &quot;$(TargetPath)&quot;)&#xD;&#xA;if exist &quot;$(SolutionDir)Keys\Launcher.p12&quot; (&quot;C:\Program Files (x86)\Microsoft SDKs\ClickOnce\SignTool\signtool.exe&quot; sign /f &quot;$(SolutionDir)Keys\Launcher.p12&quot; /p &quot;Launcher Development CRT&quot; /d &quot;Soapbox Race World&quot; /du &quot;https://soapboxrace.world&quot; /tr http://timestamp.digicert.com /td SHA256 &quot;$(TargetDir)SBRW.*.dll&quot;)&#xD;&#xA;)&#xD;&#xA;" />
-  </Target>
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="if &quot;$(Configuration)&quot; == &quot;Release&quot; (&#xD;&#xA;if exist &quot;$(SolutionDir)Keys\Launcher.p12&quot; (&quot;C:\Program Files (x86)\Microsoft SDKs\ClickOnce\SignTool\signtool.exe&quot; sign /f &quot;$(SolutionDir)Keys\Launcher.p12&quot; /p &quot;Launcher Development CRT&quot; /d &quot;Soapbox Race World&quot; /du &quot;https://soapboxrace.world&quot; /tr http://timestamp.digicert.com /td SHA256 &quot;$(TargetPath)&quot;)&#xD;&#xA;if exist &quot;$(SolutionDir)Keys\Launcher.p12&quot; (&quot;C:\Program Files (x86)\Microsoft SDKs\ClickOnce\SignTool\signtool.exe&quot; sign /f &quot;$(SolutionDir)Keys\Launcher.p12&quot; /p &quot;Launcher Development CRT&quot; /d &quot;Soapbox Race World&quot; /du &quot;https://soapboxrace.world&quot; /tr http://timestamp.digicert.com /td SHA256 &quot;$(TargetDir)SBRW.*.dll&quot;)&#xD;&#xA;)&#xD;&#xA;" />
+	</Target>
 </Project>
