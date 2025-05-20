@@ -298,20 +298,13 @@ namespace SBRW.Nancy.Hosting.Self
                 }
             }
 
-            // NOTE: For HTTP/2 we want fieldCount = 1,
-            // otherwise (HTTP/1.0 and HTTP/1.1) we want fieldCount = 2
-            int fieldCount = request.ProtocolVersion.Major == 2 ? 1 : 2;
-
-            string protocolVersion = string.Format("HTTP/{0}", request.ProtocolVersion.ToString(fieldCount));
-
             return new Request(
                 request.HttpMethod,
                 nancyUrl,
                 RequestStream.FromStream(request.InputStream, expectedRequestLength, StaticConfiguration.DisableRequestStreamSwitching ?? false),
                 request.Headers.ToDictionary(),
                 (request.RemoteEndPoint != null) ? request.RemoteEndPoint.Address.ToString() : null,
-                certificate,
-                protocolVersion);
+                certificate);
         }
 
         private Uri GetBaseUri(HttpListenerRequest request)
